@@ -25,7 +25,7 @@ int filled = 1;
 int paint = 0;
 
 int red_Scroll = 0;
-int green_Scroll = 255;
+int green_Scroll = 0;
 int blue_Scroll = 0;
 
 // Definition for rollout for r g b color sliders
@@ -59,16 +59,16 @@ float mouseZ = 1.0f;
 int mouseScreenX = 0;
 int mouseScreenY = 0;
 
-/* 	======== Our Scene ========
-	We are going to create a single sphere that we load
-	=========================== */
+/*
+ * We are going to create a single sphere that we load
+ */
 object* myObject = new object();
-/***************************************** myGlutMotion() ***********/
 
-// Updates the mouse cooridnates
-// This function turns a x and y screen cooridnate into a world coordinate
-// in object space
-void updateMouse(int x, int y){
+/* Updates the mouse cooridnates
+ * This function turns a x and y screen cooridnate into a world coordinate
+ * in object space
+ */
+void updateMouse(int x, int y) {
 	mouseScreenX = x;
 	mouseScreenY = y;
 
@@ -78,26 +78,25 @@ void updateMouse(int x, int y){
     //std::cout << "Screen (" << x << "," << y << ") to Object (" << mouseX << "," << mouseY << ")" << std::endl;
 }
 
-// This function is called everytime the mouse moves
-// In order to get our ray to draw nicely, we update the mouse coordinates
-// where the ray is first cast, and then draw the ray, and then draw the rest
-// of our scene.
-void myGlutMotion(int x, int y )
-{
+/* 
+ * This function is called everytime the mouse moves
+ * In order to get our ray to draw nicely, we update the mouse coordinates
+ * where the ray is first cast, and then draw the ray, and then draw the rest
+ * of our scene.
+ */
+void myGlutMotion(int x, int y ) {
 	updateMouse(x,y);
 	drawRayFunc(mouseX,mouseY);
     glutPostRedisplay();
 }
 
-/***************************************** myGlutMouse() ***********/
 /*	This function is called everytime the mouse is clicked
-
-	left click - draw our ray
-	right click - color the pixel appropriately.
-	
-*/
-void myGlutMouse(int button, int button_state, int x, int y )
-{
+ *
+ * left click - draw our ray
+ * right click - color the pixel appropriately.
+ *	
+ */
+void myGlutMouse(int button, int button_state, int x, int y ) {
 	updateMouse(x,y);
 
     // Cast a ray to the screen
@@ -108,39 +107,38 @@ void myGlutMouse(int button, int button_state, int x, int y )
     if((button_state == GLUT_DOWN && button==GLUT_LEFT_BUTTON) && drawRay==false){
         drawRay = true;
     }
-}    
+}
 
-
-//paint object takes two floats, x and y, which go from 0 to 1. 
+/*
+ * paint object takes two floats, x and y, which go from 0 to 1.
+ */
 void paintObject(float x, float y) {
 	myObject->paintTexture(x, y, red_Scroll, green_Scroll, blue_Scroll);
 }
 
+/*
+ *
+ */
 void paintObject(Point& isect) {
 	myObject->paintTexture(isect, red_Scroll, green_Scroll, blue_Scroll);
 }
 
-/***************************************** myGlutIdle() ***********/
-
-void myGlutIdle(void)
-{
-	/* According to the GLUT specification, the current window is
-	undefined during an idle callback.  So we need to explicitly change
-	it if necessary */
+/*
+ * According to the GLUT specification, the current window is
+ * undefined during an idle callback.  So we need to explicitly change
+ * it if necessary 
+ */
+void myGlutIdle(void) {
 	if (glutGetWindow() != main_window)
 		glutSetWindow(main_window);
 
 	glutPostRedisplay();
 }
 
-
-/**************************************** myGlutReshape() *************/
-
 /*
-	When the window is resized, update aspect ratio to get correct viewing frustrum.
-*/
-void myGlutReshape(int x, int y)
-{
+ *When the window is resized, update aspect ratio to get correct viewing frustrum.
+ */
+void myGlutReshape(int x, int y) {
 	glViewport(0, 0, x, y);
 
 	windowXSize = x;
@@ -155,13 +153,9 @@ void myGlutReshape(int x, int y)
 	glutPostRedisplay();
 }
 
-
 /*
-		You implement this!
-
-		What it is returning is the depth at where we have intersected.
-
-*/
+ * Detects an inertsection between a ray and a point
+ */
 double Intersect(Point eyePointP, Vector rayV, Matrix transformMatrix) {
 	Matrix inverTM = invert(transformMatrix);
 	Point objPoint = inverTM * eyePointP;
@@ -210,8 +204,8 @@ Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
 }
 
 /*
-	This function you will have to modify
-*/
+ * This function you will have to modify
+ */
 void drawRayFunc(int x, int y){
 	if(drawRay==true){
 		// Draw a bounding box around the sphere to help debug your intersection
@@ -238,20 +232,12 @@ void drawRayFunc(int x, int y){
 				glPopMatrix();
 			}
 		}
-
-		/*
-				You can fill this in if it helps you debug
-				This is the function you should call insersect in
-				and then have some output whether we intersected or
-				not with the object
-		*/
 	}
 }
 
-/***************************************** myGlutDisplay() *****************/
 /*
-	Renders the scene
-*/	
+ * Renders the scene
+ */	
 void myGlutDisplay(void)
 {
 	glClearColor(0.0f, 0.0f, 0.0f, 1.0f);
@@ -259,10 +245,6 @@ void myGlutDisplay(void)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	//glTranslatef( 0, 0, -4 );
-
-	//glutWireCube(2.0);
 
 	drawRayFunc(mouseX,mouseY);
 
@@ -292,31 +274,30 @@ void myGlutDisplay(void)
 }
 
 /*
-		If you add any call backs for GLUI, you can put them here
-*/
+ * If you add any call backs for GLUI, you can put them here
+ */
 void control_cb( int control )
 {
 
 }
 
-
 /*
-	Reclaim memory we've allocated
-*/
+ * Reclaim memory we've allocated
+ */
 void onExit()
 {
 	delete myObject;
 }
 
-/**************************************** main() ********************/
-
+/*
+ * Main
+ */
 int main(int argc, char* argv[])
 {
 
 	atexit(onExit);
-	/****************************************/
-	/*   Initialize GLUT and create window  */
-	/****************************************/
+
+	//Initialize GLUT and create window
 	glutInit(&argc, argv);
 	glutInitDisplayMode(GLUT_RGB | GLUT_DOUBLE | GLUT_DEPTH);
 	glutInitWindowPosition(100, 100);
@@ -325,9 +306,8 @@ int main(int argc, char* argv[])
 	main_window = glutCreateWindow("CSI 4341 In Class Assignment 7");
 	glutDisplayFunc(myGlutDisplay);
 	glutReshapeFunc(myGlutReshape);
-	/****************************************/
-	/*       Set up OpenGL lighting         */
-	/****************************************/
+	
+	//Set up OpenGL lighting
 	glShadeModel(GL_SMOOTH);
 
 	glColorMaterial(GL_FRONT_AND_BACK, GL_AMBIENT_AND_DIFFUSE);
@@ -337,21 +317,16 @@ int main(int argc, char* argv[])
 
 	static float one[] = { 1, 1, 1, 1 };
 	glLightModelfv(GL_LIGHT_MODEL_AMBIENT, one);
-	/****************************************/
-	/*          Enable z-buferring          */
-	/****************************************/
+	
+	//Enable z-buferring
 	glEnable(GL_DEPTH_TEST);
 	glPolygonOffset(1, 1);
 
-	/****************************************/
-	/*		Setup textured Objects          */
-	/****************************************/
+	//Setup textured Objects
 	myObject->setTexture(0,"./data/pink.ppm");
 	myObject->setTexture(1,"./data/smile.ppm");
 
-	/****************************************/
-	/*         Here's the GLUI code         */
-	/****************************************/
+	//Here's the GLUI code
 	GLUI *glui = GLUI_Master.create_glui("GLUI");
 
 	GLUI_Scrollbar* sb1 = new GLUI_Scrollbar(glui, "Red", GLUI_SCROLL_HORIZONTAL, &red_Scroll, COLORR_ID, control_cb);
@@ -363,22 +338,6 @@ int main(int argc, char* argv[])
 	sb1->set_int_val(255);
 	sb2->set_int_val(255);
 
-/*
-    // Create a rotation widget
-    GLUI_Rotation *view_rot = new GLUI_Rotation(glui, "Objects", view_rotate );
-    view_rot->set_spin( 1.0 );
-
-    // Navigate our scene
-    new GLUI_Column( glui, false );
-    GLUI_Translation *trans_x =  new GLUI_Translation(glui, "Objects X", GLUI_TRANSLATION_X, obj_pos );
-    trans_x->set_speed( .1 );
-    new GLUI_Column( glui, false );
-    GLUI_Translation *trans_y =  new GLUI_Translation( glui, "Objects Y", GLUI_TRANSLATION_Y, &obj_pos[1] );
-    trans_y->set_speed( .1 );
-    new GLUI_Column( glui, false );
-    GLUI_Translation *trans_z =  new GLUI_Translation( glui, "Objects Z", GLUI_TRANSLATION_Z, &obj_pos[2] );
-    trans_z->set_speed( .1 );
-*/
 	glui->add_column(true);
 
 	GLUI_Panel *render_panel = glui->add_panel("Render");
