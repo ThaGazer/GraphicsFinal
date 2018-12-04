@@ -1,0 +1,38 @@
+﻿  main.cpp
+C:\Program Files (x86)\Microsoft Visual Studio 14.0\VC\include\GL/glui.h(852): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+main.cpp(75): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+main.cpp(76): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+main.cpp(88): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+main.cpp(222): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+main.cpp(236): warning C4244: 'argument': conversion from 'double' to 'GLfloat', possible loss of data
+main.cpp(267): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+main.cpp(323): warning C4244: 'argument': conversion from 'double' to 'int', possible loss of data
+  Generating code
+  All 547 functions were compiled because no usable IPDB/IOBJ from previous compilation was found.
+  Finished generating code
+glui32.lib(algebra3.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(algebra3.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(arcball.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(arcball.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_add_controls.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_add_controls.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_bitmaps.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_bitmaps.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_button.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_button.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_checkbox.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_checkbox.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_column.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_column.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_control.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_control.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_edittext.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_edittext.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_listbox.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_listbox.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_mouse_iaction.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_mouse_iaction.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_node.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_node.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_panel.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_panel.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_radio.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_radio.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_rollout.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_rollout.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_rotation.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_rotation.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_scrollbar.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_scrollbar.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_separator.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_separator.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_spinner.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_spinner.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_statictext.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_statictext.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_translation.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_translation.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(glui_window.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(glui_window.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+glui32.lib(quaternion.obj) : warning LNK4099: PDB 'GLUI.pdb' was not found with 'glui32.lib(quaternion.obj)' or at 'H:\Graphics\projects\Graphics\Release\GLUI.pdb'; linking object as if no debug info
+  FinalProject.vcxproj -> H:\Graphics\projects\Graphics\Release\FinalProject.exe
+  FinalProject.vcxproj -> H:\Graphics\projects\Graphics\Release\FinalProject.pdb (Full PDB)
