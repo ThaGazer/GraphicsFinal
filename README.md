@@ -9,3 +9,5 @@ Stevie trys to learn git 5 days from our project due date. Lets see how this goe
   - git commit -m "commit message": commits the add changes to prep for a push to the remote repo
   - git push: pushes your local commit tree to the remote repo
   - git push -f: (dont use this unless your sure) pushes your local commits to the remote. Completely rewritting anything on the remote
+  - git merge [branch]: mashes remotes changes into your local repo
+  - git status: see what local changes are stage/unstagged and are goign to be in the commit
