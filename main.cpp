@@ -24,14 +24,13 @@ int wireframe = 0;
 int filled = 1;
 int paint = 0;
 
+int levelAP = 0, levelA = 0, levelB = 0, levelC = 0;
+
+//default values for paints on objects. 
+//TODO figure out how to remove these
 int red_Scroll = 0;
 int green_Scroll = 0;
 int blue_Scroll = 0;
-
-// Definition for rollout for r g b color sliders
-#define COLORR_ID 101
-#define COLORG_ID 102
-#define COLORB_ID 103
 
 float view_rotate[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
 float obj_pos[] = { 0.0, 0.0, 0.0 };
@@ -276,24 +275,21 @@ void myGlutDisplay(void)
 /*
  * If you add any call backs for GLUI, you can put them here
  */
-void control_cb( int control )
-{
+void control_cb( int control ) {
 
 }
 
 /*
  * Reclaim memory we've allocated
  */
-void onExit()
-{
+void onExit() {
 	delete myObject;
 }
 
 /*
  * Main
  */
-int main(int argc, char* argv[])
-{
+int main(int argc, char* argv[]) {
 
 	atexit(onExit);
 
@@ -329,26 +325,22 @@ int main(int argc, char* argv[])
 	//Here's the GLUI code
 	GLUI *glui = GLUI_Master.create_glui("GLUI");
 
-	GLUI_Scrollbar* sb1 = new GLUI_Scrollbar(glui, "Red", GLUI_SCROLL_HORIZONTAL, &red_Scroll, COLORR_ID, control_cb);
-	sb1->set_int_limits(0, 255);
-	GLUI_Scrollbar* sb2 = new GLUI_Scrollbar(glui, "Green", GLUI_SCROLL_HORIZONTAL, &green_Scroll, COLORG_ID, control_cb);
-	sb2->set_int_limits(0, 255);
-	GLUI_Scrollbar* sb3 = new GLUI_Scrollbar(glui, "Blue", GLUI_SCROLL_HORIZONTAL, &blue_Scroll, COLORB_ID, control_cb);
-	sb3->set_int_limits(0, 255);
-	sb1->set_int_val(255);
-	sb2->set_int_val(255);
+	GLUI_Panel* panel = glui->add_panel("Object Renderer");
+	new GLUI_Checkbox(panel, "Wireframe", &wireframe);
+	new GLUI_Checkbox(panel, "Filled", &filled);
+	new GLUI_Checkbox(panel, "Paint", &paint);
 
-	glui->add_column(true);
-
-	GLUI_Panel *render_panel = glui->add_panel("Render");
-	new GLUI_Checkbox(render_panel, "Wireframe", &wireframe);
-	new GLUI_Checkbox(render_panel, "Filled", &filled);
-	new GLUI_Checkbox(render_panel, "Paint", &paint);
+	glui->add_column_to_panel(panel, true);
+	GLUI_Checkbox* levelap = glui->add_checkbox_to_panel(panel, "Level A+", &levelAP, 1, control_cb);
+	GLUI_Checkbox* levela = glui->add_checkbox_to_panel(panel, "Level A", &levelA, 1, control_cb);
+	GLUI_Checkbox* levelb = glui->add_checkbox_to_panel(panel, "Level B", &levelB, 1, control_cb);
+	GLUI_Checkbox* levelc = glui->add_checkbox_to_panel(panel, "Level C", &levelC, 1, control_cb);
 
 	glui->add_button("Quit", 0, (GLUI_Update_CB)exit);
 
 	glui->set_main_gfx_window(main_window);
-	/* We register the idle callback with GLUI, *not* with GLUT */
+
+	//We register the idle callback with GLUI, *not* with GLUT
 	GLUI_Master.set_glutIdleFunc(myGlutIdle);
 	GLUI_Master.set_glutMouseFunc( myGlutMouse );
 	glutMotionFunc( myGlutMotion );
