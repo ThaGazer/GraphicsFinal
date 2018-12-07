@@ -367,19 +367,24 @@ void ply::render(GLuint blendTextureID) {
 }
 
 void ply::rotate(float angle, int x, int y, int z, GLuint blendTextureID) {
-	// Enable the ability to draw 2D textures
-	glEnable(GL_TEXTURE_2D);
-
-	// Render the base texture for us to see how it changes
-	glBindTexture(GL_TEXTURE_2D, blendTextureID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	glPushMatrix();
-	glRotatef(angle, x, y, z);
-	glPopMatrix();
-	glDisable(GL_TEXTURE_2D);
+	if(x == true) {
+		for (int i = 0; i < vertexCount; i++) {
+			vertexList[i].x += angle;
+		}
+	}
+	else if(y == true) {
+		for (int i = 0; i < vertexCount; i++) {
+			vertexList[i].y += angle;
+		}
+	}
+	else {
+		for (int i = 0; i < vertexCount; i++) {
+			vertexList[i].z += angle;
+		}
+	}
 }
+
+void ply::stretch() {}
 
 /*  ===============================================
 Desc: Draws the wireframe(edges) of a 3D object.

@@ -154,6 +154,7 @@
     <ClCompile Include="ppm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="Algebra.h" />
     <ClInclude Include="entity.h" />
     <ClInclude Include="geometry.h" />
     <ClInclude Include="object.h" />

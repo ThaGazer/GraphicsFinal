@@ -57,6 +57,7 @@ class ply : public entity{
 		=============================================== */  
 		void render(GLuint baseTextureID);
 		void rotate(float angle, int x, int y, int z, GLuint blendTextureID);
+		void stretch();
 		/*	===============================================
 		Desc: Draws the wireframe(edges) of a 3D object
 		Precondition:

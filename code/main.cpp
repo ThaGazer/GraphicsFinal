@@ -37,9 +37,12 @@ float obj_pos[] = { 0.0, 0.0, 0.0 };
 
 // function declarations
 void drawRayFunc(int x, int y);
+void objectInteraction();
 
 // Flag for OpenGL interaction
 bool drawRay = false;
+bool objectRotation = false;
+bool objectStretch = false;
 
 // Window information
 double windowXSize = 500;
@@ -79,70 +82,6 @@ void updateMouse(int x, int y) {
     mouseY = 1.0f - (2.0f * y)/ windowYSize;
     mouseZ = camera_near;
     //std::cout << "Screen (" << x << "," << y << ") to Object (" << mouseX << "," << mouseY << ")" << std::endl;
-}
-
-/* 
- * This function is called everytime the mouse moves
- * In order to get our ray to draw nicely, we update the mouse coordinates
- * where the ray is first cast, and then draw the ray, and then draw the rest
- * of our scene.
- */
-void myGlutMotion(int x, int y ) {
-	updateMouse(x,y);
-	drawRayFunc(mouseX,mouseY);
-    glutPostRedisplay();
-}
-
-/*	This function is called everytime the mouse is clicked
- *
- * left click - draw our ray
- * right click - color the pixel appropriately.
- *	
- */
-void myGlutMouse(int button, int button_state, int x, int y ) {
-	updateMouse(x,y);
-
-    // Cast a ray to the screen
-    // Setup a flag so we can see the actual ray that is being cast.
-    if(button_state == GLUT_UP && button==GLUT_LEFT_BUTTON){
-        drawRay = false;
-    }
-    if((button_state == GLUT_DOWN && button==GLUT_LEFT_BUTTON) && drawRay==false){
-        drawRay = true;
-		mouseClickX = x;
-		mouseClickY = y;
-		cout << mouseClickX << " " << mouseClickY << endl;
-	}
-}
-
-/*
- * According to the GLUT specification, the current window is
- * undefined during an idle callback.  So we need to explicitly change
- * it if necessary 
- */
-void myGlutIdle(void) {
-	if (glutGetWindow() != main_window)
-		glutSetWindow(main_window);
-
-	glutPostRedisplay();
-}
-
-/*
- *When the window is resized, update aspect ratio to get correct viewing frustrum.
- */
-void myGlutReshape(int x, int y) {
-	glViewport(0, 0, x, y);
-
-	windowXSize = x;
-	windowXSize = y;
-
-	glMatrixMode(GL_PROJECTION);
-	glLoadIdentity();
-
-	//using ortho projection for this assignment
-	glOrtho(camera_left, camera_right, camera_bottom, camera_top, camera_near, camera_far);
-
-	glutPostRedisplay();
 }
 
 /*
@@ -208,22 +147,30 @@ void drawRayFunc(int x, int y){
 		std::cout << "t: " << t << std::endl;
 
 		Point isectPointWorldCoord = getIsectPointWorldCoord(eyePointP, rayV, t);
+		
+		if (t > 0) { //mouse intersects with object
+			objectStretch = true;
+		}
+		else { //mouse clicks outside object bounds
+			objectRotation = true;
+		}
+	}
+}
 
-		if (t > 0) {
-			//draws red box on intersection
-			glColor3f(1, 0, 0);
-			glutWireCube(1.0f);
-				glColor3f(red_Scroll / (float)255.0f, green_Scroll / (float)255.0f, blue_Scroll / (float)255.0f);
-				glPushMatrix();
-					glTranslatef(isectPointWorldCoord[0], isectPointWorldCoord[1], isectPointWorldCoord[2]);
-					glutSolidSphere(0.05f, 10, 10);
-				glPopMatrix();
-
-			//TODO strech object coords on ouse point
+/*
+ * Controls interactions with the object 
+ * depending on where the mouse click
+ */
+void objectInteraction() {
+	if (drawRay == true) {
+		if (objectRotation == true) {
+			cout << "Roatating" << endl;
+		}
+		else if (objectStretch == true) {
+			cout << "Stretching" << endl;
 		}
 		else {
-			float angle = sqrtf(((x - mouseClickX)*(x - mouseClickX)) + ((y - mouseClickY)*(y - mouseClickY)));
-			myObject->rotateObject(angle, 0, 1, 0);
+			exit(1);
 		}
 	}
 }
@@ -238,8 +185,6 @@ void myGlutDisplay(void)
 
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
-
-	drawRayFunc(mouseX,mouseY);
 
 	if (filled) {
 		glEnable(GL_POLYGON_OFFSET_FILL);
@@ -258,6 +203,73 @@ void myGlutDisplay(void)
 	}
 
 	glutSwapBuffers();
+}
+
+/*
+* This function is called everytime the mouse moves
+* In order to get our ray to draw nicely, we update the mouse coordinates
+* where the ray is first cast, and then draw the ray, and then draw the rest
+* of our scene.
+*/
+void myGlutMotion(int x, int y) {
+	updateMouse(x, y);
+	objectInteraction();
+	glutPostRedisplay();
+}
+
+/*	This function is called everytime the mouse is clicked
+*
+* left click - draw our ray
+* right click - color the pixel appropriately.
+*
+*/
+void myGlutMouse(int button, int button_state, int x, int y) {
+	updateMouse(x, y);
+
+	// Cast a ray to the screen
+	// Setup a flag so we can see the actual ray that is being cast.
+	if (button_state == GLUT_UP && button == GLUT_LEFT_BUTTON) {
+		drawRay = false;
+		objectRotation = false;
+		objectStretch = false;
+	}
+	if ((button_state == GLUT_DOWN && button == GLUT_LEFT_BUTTON) && drawRay == false) {
+		drawRay = true;
+		mouseClickX = x;
+		mouseClickY = y;
+		drawRayFunc(x, y);
+		cout << mouseClickX << " " << mouseClickY << endl;
+	}
+}
+
+/*
+* According to the GLUT specification, the current window is
+* undefined during an idle callback.  So we need to explicitly change
+* it if necessary
+*/
+void myGlutIdle(void) {
+	if (glutGetWindow() != main_window)
+		glutSetWindow(main_window);
+
+	glutPostRedisplay();
+}
+
+/*
+*When the window is resized, update aspect ratio to get correct viewing frustrum.
+*/
+void myGlutReshape(int x, int y) {
+	glViewport(0, 0, x, y);
+
+	windowXSize = x;
+	windowXSize = y;
+
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
+	//using ortho projection for this assignment
+	glOrtho(camera_left, camera_right, camera_bottom, camera_top, camera_near, camera_far);
+
+	glutPostRedisplay();
 }
 
 /*
@@ -304,6 +316,7 @@ int main(int argc, char* argv[]) {
 
 	main_window = glutCreateWindow("CSI 4341 Final Project");
 	glutDisplayFunc(myGlutDisplay);
+	glutKeyboardUpFunc(myGlutK);
 	glutReshapeFunc(myGlutReshape);
 	
 	//Set up OpenGL lighting
