@@ -26,6 +26,8 @@ ply::ply(string _filePath) {
 	filePath = _filePath;
 	vertexList = NULL;
 	faceList = NULL;
+	base_vertexList = NULL;
+	base_faceList = NULL;
 	properties = 0;
 	// Call helper function to load geometry
 	loadGeometry();
@@ -40,9 +42,13 @@ ply::~ply() {
 	// Delete the allocated arrays
 	delete[] vertexList;
 	delete[] faceList;
+	delete[] base_vertexList;
+	delete[] base_faceList;
 	// Set pointers to NULL
 	vertexList = NULL;
 	faceList = NULL;
+	base_vertexList = NULL;
+	base_faceList = NULL;
 }
 
 /*  ===============================================
@@ -50,8 +56,7 @@ Desc: reloads the geometry for a 3D object
 Precondition:
 Postcondition:
 =============================================== */
-void ply::reload(string _filePath) {
-	filePath = _filePath;
+void ply::reload() {
 	// reclaim memory allocated in each array
 	delete[] vertexList;
 	delete[] faceList;
@@ -60,6 +65,10 @@ void ply::reload(string _filePath) {
 	faceList = NULL;
 	// Call our function again to load new vertex and face information.
 	loadGeometry();
+}
+
+void ply::animatReset() {
+
 }
 
 /*  ===============================================
@@ -102,7 +111,8 @@ void ply::loadGeometry() {
 					vertexCount = atoi(delimeter_pointer);
 					// Allocate memory for our vertices
 					vertexList = new vertex[vertexCount];
-					if (vertexList == NULL) {
+					base_vertexList = new vertex[vertexCount];
+					if (vertexList == NULL || base_vertexList == NULL) {
 						cout << "Cannot allocate memory for Vertex List: System out of memory" << endl;
 						exit(1);
 					}
@@ -112,7 +122,8 @@ void ply::loadGeometry() {
 					faceCount = atoi(delimeter_pointer);
 					// Allocate memory for our faces
 					faceList = new face[faceCount];
-					if (faceList == NULL) {
+					base_faceList = new face[faceCount];
+					if (faceList == NULL || base_faceList == NULL) {
 						cout << "Cannot allocate memory for FaceList: System out of memory" << endl;
 						exit(1);
 					}
@@ -130,35 +141,51 @@ void ply::loadGeometry() {
 				//
 				if (readVertices == true && verticesRead < vertexCount) {
 					if (properties >= 0) {  // Read in the x vertex
-						vertexList[verticesRead].x = atof(delimeter_pointer);
+						float x = atof(delimeter_pointer);
+						vertexList[verticesRead].x = x;
+						base_vertexList[verticesRead].x = x;
 					}
 					if (properties >= 1) {   // Read in the y vertex
 						delimeter_pointer = strtok(NULL, " ");
-						vertexList[verticesRead].y = atof(delimeter_pointer);
+						float y = atof(delimeter_pointer);
+						vertexList[verticesRead].y = y;
+						base_vertexList[verticesRead].y = y;
 					}
 					if (properties >= 2) {  // Read in the z vertex
 						delimeter_pointer = strtok(NULL, " ");
-						vertexList[verticesRead].z = atof(delimeter_pointer);
+						float z = atof(delimeter_pointer);
+						vertexList[verticesRead].z = z;
+						base_vertexList[verticesRead].z = z;
 					}
 					if (properties >= 3) {   //
 						delimeter_pointer = strtok(NULL, " ");
-						vertexList[verticesRead].confidence = atof(delimeter_pointer);
+						float conf = atof(delimeter_pointer);
+						vertexList[verticesRead].confidence = conf;
+						base_vertexList[verticesRead].confidence = conf;
 					}
 					if (properties >= 4) {
 						delimeter_pointer = strtok(NULL, " ");
-						vertexList[verticesRead].intensity = atof(delimeter_pointer);
+						float intens = atof(delimeter_pointer);
+						vertexList[verticesRead].intensity = intens;
+						base_vertexList[verticesRead].intensity = intens;
 					}
 					if (properties >= 5) {
 						delimeter_pointer = strtok(NULL, " ");
-						vertexList[verticesRead].nx = atof(delimeter_pointer);
+						float nx = atof(delimeter_pointer);
+						vertexList[verticesRead].nx = nx;
+						base_vertexList[verticesRead].nx = nx;
 					}
 					if (properties >= 6) {
 						delimeter_pointer = strtok(NULL, " ");
-						vertexList[verticesRead].ny = atof(delimeter_pointer);
+						float ny = atof(delimeter_pointer);
+						vertexList[verticesRead].ny = ny;
+						base_vertexList[verticesRead].ny = ny;
 					}
 					if (properties >= 7) {
 						delimeter_pointer = strtok(NULL, " ");
-						vertexList[verticesRead].nz = atof(delimeter_pointer);
+						float nz = atof(delimeter_pointer);
+						vertexList[verticesRead].nz = nz;
+						base_vertexList[verticesRead].nz = nz;
 					}
 					verticesRead++;
 				}
@@ -297,10 +324,18 @@ Postcondition:
 Error Condition: If we haven't allocated memory for our
 faceList or vertexList then do not attempt to render.
 =============================================== */
-void ply::render() {
+void ply::render(GLuint blendTextureID) {
 	if (vertexList == NULL || faceList == NULL) {
 		return;
 	}
+
+	// Enable the ability to draw 2D textures
+	glEnable(GL_TEXTURE_2D);
+
+	// Render the base texture for us to see how it changes
+	glBindTexture(GL_TEXTURE_2D, blendTextureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
 	glPushMatrix();
 
@@ -327,6 +362,23 @@ void ply::render() {
 		glEnd();
 	}
 	glPopMatrix();
+
+	glDisable(GL_TEXTURE_2D);
+}
+
+void ply::rotate(float angle, int x, int y, int z, GLuint blendTextureID) {
+	// Enable the ability to draw 2D textures
+	glEnable(GL_TEXTURE_2D);
+
+	// Render the base texture for us to see how it changes
+	glBindTexture(GL_TEXTURE_2D, blendTextureID);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
+
+	glPushMatrix();
+	glRotatef(angle, x, y, z);
+	glPopMatrix();
+	glDisable(GL_TEXTURE_2D);
 }
 
 /*  ===============================================

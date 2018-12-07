@@ -49,21 +49,26 @@ class ply : public entity{
 			Precondition:
 			Postcondition:
 		=============================================== */ 
-		void reload(string _filePath);
-
+		void reload();
 		/*	===============================================
 			Desc: Draws a filled 3D object
 			Precondition:
 			Postcondition:
 		=============================================== */  
-		void render();
+		void render(GLuint baseTextureID);
+		void rotate(float angle, int x, int y, int z, GLuint blendTextureID);
 		/*	===============================================
-			Desc: Draws the wireframe(edges) of a 3D object
-			Precondition:
-			Postcondition:
-		=============================================== */  
+		Desc: Draws the wireframe(edges) of a 3D object
+		Precondition:
+		Postcondition:
+		=============================================== */
 		void renderWireFrame();
-
+		/*	===============================================
+		Desc: resets all changes made to the object based on the original object;
+		Precondition:
+		Postcondition:
+		=============================================== */
+		void animatReset();
 		/*	===============================================
 			Desc: Prints some statistics about the file you have read in
 			Precondition:
@@ -111,10 +116,12 @@ class ply : public entity{
 		// A dynamically allocated array that stores
 		// a vertex
 		vertex* vertexList;
+		vertex* base_vertexList;
 		// A dynamically allocated array that stores
 		// a list of faces (essentially integers that will
 		// be looked up from the vertex list)
 		face* faceList;
+		face* base_faceList;
 
 };
 

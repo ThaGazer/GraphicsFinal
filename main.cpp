@@ -24,7 +24,7 @@ int wireframe = 0;
 int filled = 1;
 int paint = 0;
 
-int levelAP = 0, levelA = 0, levelB = 0, levelC = 1;
+int level = 3;
 
 //default values for paints on objects. 
 //TODO figure out how to remove these
@@ -113,20 +113,6 @@ void myGlutMouse(int button, int button_state, int x, int y ) {
 		mouseClickY = y;
 		cout << mouseClickX << " " << mouseClickY << endl;
 	}
-}
-
-/*
- * paint object takes two floats, x and y, which go from 0 to 1.
- */
-void paintObject(float x, float y) {
-	myObject->paintTexture(x, y, red_Scroll, green_Scroll, blue_Scroll);
-}
-
-/*
- *
- */
-void paintObject(Point& isect) {
-	myObject->paintTexture(isect, red_Scroll, green_Scroll, blue_Scroll);
 }
 
 /*
@@ -224,18 +210,20 @@ void drawRayFunc(int x, int y){
 		Point isectPointWorldCoord = getIsectPointWorldCoord(eyePointP, rayV, t);
 
 		if (t > 0) {
+			//draws red box on intersection
 			glColor3f(1, 0, 0);
 			glutWireCube(1.0f);
-			if (paint == 1) {
-				paintObject(isectPointWorldCoord);
-			}
-			else{
 				glColor3f(red_Scroll / (float)255.0f, green_Scroll / (float)255.0f, blue_Scroll / (float)255.0f);
 				glPushMatrix();
 					glTranslatef(isectPointWorldCoord[0], isectPointWorldCoord[1], isectPointWorldCoord[2]);
 					glutSolidSphere(0.05f, 10, 10);
 				glPopMatrix();
-			}
+
+			//TODO strech object coords on ouse point
+		}
+		else {
+			float angle = sqrtf(((x - mouseClickX)*(x - mouseClickX)) + ((y - mouseClickY)*(y - mouseClickY)));
+			myObject->rotateObject(angle, 0, 1, 0);
 		}
 	}
 }
@@ -277,13 +265,17 @@ void myGlutDisplay(void)
  */
 void control_cb( int control ) {
 	switch (control) {
+		case 0:
+			//TODO add objects to facea
+			break;
 		case 1:
+			//TODO load actual mario face
 			break;
 		case 2:
+			//TODO enable animations
 			break;
 		case 3:
-			break;
-		case 4:
+			//TODO load sphere
 			break;
 		default:
 			exit(1);
@@ -330,9 +322,8 @@ int main(int argc, char* argv[]) {
 	glPolygonOffset(1, 1);
 
 	//Setup textured Objects
-	myObject->setTexture(0,"./data/pink.ppm");
-	myObject->setTexture(1,"./data/smile.ppm");
-	myObject->setTexture(2, "./data/bunny.ply");
+	myObject->setTexture(0,"./data/smile.ppm");
+	myObject->setTexture(1, "./data/sphere.ply");
 
 	//Here's the GLUI code
 	GLUI *glui = GLUI_Master.create_glui("GLUI");
@@ -340,13 +331,13 @@ int main(int argc, char* argv[]) {
 	GLUI_Panel* panel = glui->add_panel("Object Renderer");
 	new GLUI_Checkbox(panel, "Wireframe", &wireframe);
 	new GLUI_Checkbox(panel, "Filled", &filled);
-	new GLUI_Checkbox(panel, "Paint", &paint);
 
 	glui->add_column_to_panel(panel, true);
-	GLUI_Checkbox* levelap = glui->add_checkbox_to_panel(panel, "Level A+", &levelAP, 4, control_cb);
-	GLUI_Checkbox* levela = glui->add_checkbox_to_panel(panel, "Level A", &levelA, 3, control_cb);
-	GLUI_Checkbox* levelb = glui->add_checkbox_to_panel(panel, "Level B", &levelB, 2, control_cb);
-	GLUI_Checkbox* levelc = glui->add_checkbox_to_panel(panel, "Level C", &levelC, 1, control_cb);
+	GLUI_RadioGroup* radioGroup = glui->add_radiogroup_to_panel(panel, &level, NULL, control_cb);
+	GLUI_RadioButton* radAP = glui->add_radiobutton_to_group(radioGroup, "Level A+");
+	GLUI_RadioButton* radA = glui->add_radiobutton_to_group(radioGroup, "Level A");
+	GLUI_RadioButton* radB = glui->add_radiobutton_to_group(radioGroup, "Level B");
+	GLUI_RadioButton* radC = glui->add_radiobutton_to_group(radioGroup, "Level C");
 
 	glui->add_button("Quit", 0, (GLUI_Update_CB)exit);
 

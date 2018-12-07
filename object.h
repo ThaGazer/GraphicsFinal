@@ -69,6 +69,8 @@ class object{
 		Postcondition:
 		=============================================== */
 		void drawWiredObject();
+
+		void rotateObject(float angle, int x, int y, int z);
 		/*	===============================================
 		Desc:			Calls into this function modify a previously loaded ppm's
 						color array.
