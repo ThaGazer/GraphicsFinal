@@ -24,7 +24,7 @@ int wireframe = 0;
 int filled = 1;
 int paint = 0;
 
-int levelAP = 0, levelA = 0, levelB = 0, levelC = 0;
+int levelAP = 0, levelA = 0, levelB = 0, levelC = 1;
 
 //default values for paints on objects. 
 //TODO figure out how to remove these
@@ -55,8 +55,12 @@ float camera_far = 2.0f;
 float mouseX = 0;
 float mouseY = 0;
 float mouseZ = 1.0f;
+float mouseClickX = 0;
+float mouseClickY = 0;
 int mouseScreenX = 0;
 int mouseScreenY = 0;
+
+using namespace std;
 
 /*
  * We are going to create a single sphere that we load
@@ -105,7 +109,10 @@ void myGlutMouse(int button, int button_state, int x, int y ) {
     }
     if((button_state == GLUT_DOWN && button==GLUT_LEFT_BUTTON) && drawRay==false){
         drawRay = true;
-    }
+		mouseClickX = x;
+		mouseClickY = y;
+		cout << mouseClickX << " " << mouseClickY << endl;
+	}
 }
 
 /*
@@ -208,7 +215,6 @@ Point getIsectPointWorldCoord(Point eye, Vector ray, double t) {
 void drawRayFunc(int x, int y){
 	if(drawRay==true){
 		// Draw a bounding box around the sphere to help debug your intersection
-		std::cout << x << y << std::endl;
 		Point eyePointP = getEyePoint(); 
 		Vector rayV = generateRay(eyePointP);
 
@@ -252,10 +258,7 @@ void myGlutDisplay(void)
 		glColor3f(1.0, 1.0, 1.0);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 		myObject->render();
-		glPushMatrix();
-			glRotatef(90,0,1,0);
-			myObject->drawTexturedSphere();
-		glPopMatrix();
+			myObject->drawFilledObject();
 	}
 	
 	if (wireframe) {
@@ -263,10 +266,7 @@ void myGlutDisplay(void)
 		glColor3f(1.0, 1.0, 1.0);
 		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
 		myObject->render();
-		glPushMatrix();
-			glRotatef(90, 0, 1, 0);
-			myObject->drawTexturedSphere();
-		glPopMatrix();
+			myObject->drawWiredObject();
 	}
 
 	glutSwapBuffers();
@@ -276,7 +276,18 @@ void myGlutDisplay(void)
  * If you add any call backs for GLUI, you can put them here
  */
 void control_cb( int control ) {
-
+	switch (control) {
+		case 1:
+			break;
+		case 2:
+			break;
+		case 3:
+			break;
+		case 4:
+			break;
+		default:
+			exit(1);
+	}
 }
 
 /*
@@ -299,7 +310,7 @@ int main(int argc, char* argv[]) {
 	glutInitWindowPosition(100, 100);
 	glutInitWindowSize(windowXSize, windowYSize);
 
-	main_window = glutCreateWindow("CSI 4341 In Class Assignment 7");
+	main_window = glutCreateWindow("CSI 4341 Final Project");
 	glutDisplayFunc(myGlutDisplay);
 	glutReshapeFunc(myGlutReshape);
 	
@@ -321,6 +332,7 @@ int main(int argc, char* argv[]) {
 	//Setup textured Objects
 	myObject->setTexture(0,"./data/pink.ppm");
 	myObject->setTexture(1,"./data/smile.ppm");
+	myObject->setTexture(2, "./data/bunny.ply");
 
 	//Here's the GLUI code
 	GLUI *glui = GLUI_Master.create_glui("GLUI");
@@ -331,9 +343,9 @@ int main(int argc, char* argv[]) {
 	new GLUI_Checkbox(panel, "Paint", &paint);
 
 	glui->add_column_to_panel(panel, true);
-	GLUI_Checkbox* levelap = glui->add_checkbox_to_panel(panel, "Level A+", &levelAP, 1, control_cb);
-	GLUI_Checkbox* levela = glui->add_checkbox_to_panel(panel, "Level A", &levelA, 1, control_cb);
-	GLUI_Checkbox* levelb = glui->add_checkbox_to_panel(panel, "Level B", &levelB, 1, control_cb);
+	GLUI_Checkbox* levelap = glui->add_checkbox_to_panel(panel, "Level A+", &levelAP, 4, control_cb);
+	GLUI_Checkbox* levela = glui->add_checkbox_to_panel(panel, "Level A", &levelA, 3, control_cb);
+	GLUI_Checkbox* levelb = glui->add_checkbox_to_panel(panel, "Level B", &levelB, 2, control_cb);
 	GLUI_Checkbox* levelc = glui->add_checkbox_to_panel(panel, "Level C", &levelC, 1, control_cb);
 
 	glui->add_button("Quit", 0, (GLUI_Update_CB)exit);

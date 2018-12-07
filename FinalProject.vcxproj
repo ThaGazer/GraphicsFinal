@@ -147,13 +147,24 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="entity.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="object.cpp" />
+    <ClCompile Include="ply.cpp" />
     <ClCompile Include="ppm.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="entity.h" />
+    <ClInclude Include="geometry.h" />
     <ClInclude Include="object.h" />
+    <ClInclude Include="ply.h" />
     <ClInclude Include="ppm.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\bunny.ply" />
+    <None Include="data\circuit.ppm" />
+    <None Include="data\pink.ppm" />
+    <None Include="data\smile.ppm" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

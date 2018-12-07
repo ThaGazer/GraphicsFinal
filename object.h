@@ -14,6 +14,7 @@
 
 #include "Algebra.h"
 #include "ppm.h"
+#include "ply.h"
 
 /*
 	This object renders a piece of geometry ('a sphere by default')
@@ -57,11 +58,17 @@ class object{
 		=============================================== */ 
 		void render();
 		/*	===============================================
-		Desc:	Draw the actual rendered spheres
+		Desc:	Draw the filled rendered ply
 		Precondition: 
 		Postcondition:
 		=============================================== */ 
-		void drawTexturedSphere();
+		void drawFilledObject();
+		/*	===============================================
+		Desc:	Draw the wired rendered object
+		Precondition:
+		Postcondition:
+		=============================================== */
+		void drawWiredObject();
 		/*	===============================================
 		Desc:			Calls into this function modify a previously loaded ppm's
 						color array.
@@ -88,6 +95,9 @@ class object{
 		// This is demonstrating multiple textures or 'multitexturing' as it
 		// is called in the graphics world.
 		ppm* blendTexture;
+
+		//Ply object to map on to
+		ply* objectTexture;
 
 		// Create a texture id that uniquly identifies each texture image
 		// I believe OpenGL will use these id's when we generate a texture

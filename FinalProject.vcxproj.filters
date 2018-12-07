@@ -24,6 +24,12 @@
     <ClCompile Include="ppm.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="ply.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="entity.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="object.h">
@@ -32,5 +38,28 @@
     <ClInclude Include="ppm.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="ply.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="entity.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="geometry.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="data\bunny.ply">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\circuit.ppm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\pink.ppm">
+      <Filter>Resource Files</Filter>
+    </None>
+    <None Include="data\smile.ppm">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
 </Project>
