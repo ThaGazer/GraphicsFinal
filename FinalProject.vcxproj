@@ -147,26 +147,26 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="entity.cpp" />
-    <ClCompile Include="main.cpp" />
-    <ClCompile Include="object.cpp" />
-    <ClCompile Include="ply.cpp" />
-    <ClCompile Include="ppm.cpp" />
-  </ItemGroup>
-  <ItemGroup>
-    <ClInclude Include="Algebra.h" />
-    <ClInclude Include="entity.h" />
-    <ClInclude Include="geometry.h" />
-    <ClInclude Include="object.h" />
-    <ClInclude Include="ply.h" />
-    <ClInclude Include="ppm.h" />
-  </ItemGroup>
-  <ItemGroup>
     <None Include="data\bunny.ply" />
     <None Include="data\circuit.ppm" />
     <None Include="data\pink.ppm" />
     <None Include="data\smile.ppm" />
     <None Include="sphere.ply" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="code\Algebra.h" />
+    <ClInclude Include="code\entity.h" />
+    <ClInclude Include="code\geometry.h" />
+    <ClInclude Include="code\object.h" />
+    <ClInclude Include="code\ply.h" />
+    <ClInclude Include="code\ppm.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClCompile Include="code\entity.cpp" />
+    <ClCompile Include="code\main.cpp" />
+    <ClCompile Include="code\object.cpp" />
+    <ClCompile Include="code\ply.cpp" />
+    <ClCompile Include="code\ppm.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

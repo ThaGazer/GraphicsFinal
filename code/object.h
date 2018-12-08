@@ -23,6 +23,7 @@
 */
 class object{
 	public:
+		void drawShpere();
 		/*	===============================================
 		Desc:
 		Precondition: 
@@ -56,7 +57,7 @@ class object{
 		Precondition: 
 		Postcondition:
 		=============================================== */ 
-		void render();
+		void render(int option);
 		/*	===============================================
 		Desc:	Draw the filled rendered ply
 		Precondition: 
@@ -69,23 +70,23 @@ class object{
 		Postcondition:
 		=============================================== */
 		void drawWiredObject();
-
-		void rotateObject(float angle, int x, int y, int z);
 		/*	===============================================
 		Desc:			Calls into this function modify a previously loaded ppm's
-						color array.
+		color array.
 
-						Note that this does NOT change the original ppm image at all.
+		Note that this does NOT change the original ppm image at all.
 
-						Also note, that a new OpenGL Texture is generated everytime, we
-						paint on the texture.  There could probably be a buffer to improve
-						the performance of this call.
-		Precondition: 
+		Also note, that a new OpenGL Texture is generated everytime, we
+		paint on the texture.  There could probably be a buffer to improve
+		the performance of this call.
+		Precondition:
 		Postcondition:
-		=============================================== */ 
+		=============================================== */
 		void paintTexture(float x, float y, char r, char g, char b);
-		void paintTexture(Point& isect, char r, char g, char b);
+		void paintTexture();
 
+		void resetAnimation(string _filename);
+		void rotateObject(float angle, int x, int y, int z);
 		
 	private:
 		// The first texture image

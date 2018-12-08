@@ -55,7 +55,7 @@ class ply : public entity{
 			Precondition:
 			Postcondition:
 		=============================================== */  
-		void render(GLuint baseTextureID);
+		void render();
 		void rotate(float angle, int x, int y, int z, GLuint blendTextureID);
 		void stretch();
 		/*	===============================================

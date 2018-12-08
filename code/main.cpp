@@ -20,24 +20,15 @@
 
 /** These are the live variables passed into GLUI ***/
 int main_window;
-int wireframe = 0;
-int filled = 1;
-int paint = 0;
 
+//Glui menu variables
+int framing = 0;
 int level = 3;
 
 //default values for paints on objects. 
-//TODO figure out how to remove these
-int red_Scroll = 0;
-int green_Scroll = 0;
-int blue_Scroll = 0;
 
 float view_rotate[16] = { 1,0,0,0, 0,1,0,0, 0,0,1,0, 0,0,0,1 };
 float obj_pos[] = { 0.0, 0.0, 0.0 };
-
-// function declarations
-void drawRayFunc(int x, int y);
-void objectInteraction();
 
 // Flag for OpenGL interaction
 bool drawRay = false;
@@ -62,6 +53,10 @@ float mouseClickX = 0;
 float mouseClickY = 0;
 int mouseScreenX = 0;
 int mouseScreenY = 0;
+
+string textureFile_c = "./data/smile.ppm";
+string objectFile_c = "./data/sphere.ply";
+string objectFile_a = "";
 
 using namespace std;
 
@@ -186,23 +181,38 @@ void myGlutDisplay(void)
 	glMatrixMode(GL_MODELVIEW);
 	glLoadIdentity();
 
-	if (filled) {
-		glEnable(GL_POLYGON_OFFSET_FILL);
-		glColor3f(1.0, 1.0, 1.0);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
-		myObject->render();
-			myObject->drawFilledObject();
-	}
-	
-	if (wireframe) {
-		glDisable(GL_POLYGON_OFFSET_FILL);
-		glColor3f(1.0, 1.0, 1.0);
-		glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-		myObject->render();
-			myObject->drawWiredObject();
+	switch (framing) {
+		case 0:
+			glEnable(GL_POLYGON_OFFSET_FILL);
+			glColor3f(1.0, 1.0, 1.0);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+			myObject->render(0);
+			break;
+		case 1:
+			glDisable(GL_POLYGON_OFFSET_FILL);
+			glColor3f(1.0, 1.0, 1.0);
+			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
+			myObject->render(1);
+			break;
+		default:
+			exit(1);
 	}
 
 	glutSwapBuffers();
+}
+
+/*
+ *
+ */
+void myGlutKeyBoard(unsigned char key, int x, int y) {
+	switch (key) {
+		case 'q':
+			exit(0);
+			break;
+		case 'r':
+			myObject->resetAnimation(objectFile_c);
+	}
+	glutPostRedisplay();
 }
 
 /*
@@ -276,18 +286,32 @@ void myGlutReshape(int x, int y) {
  * If you add any call backs for GLUI, you can put them here
  */
 void control_cb( int control ) {
-	switch (control) {
+	switch (level) {
 		case 0:
-			//TODO add objects to facea
+			//TODO add objects to face
+			cout << "Loading A+ level project..." << endl;
+			myObject->setTexture(0, "");
+			myObject->setTexture(1, objectFile_a);
+			myObject->render(0);
 			break;
 		case 1:
-			//TODO load actual mario face
+			//TODO enable A level features
+			cout << "Loading A level project..." << endl;
+			myObject->setTexture(0, "");
+			myObject->setTexture(1, objectFile_a);
+			myObject->render(0);
 			break;
 		case 2:
-			//TODO enable animations
+			cout << "Loading B level project..." << endl;
+			myObject->setTexture(0, "");
+			myObject->setTexture(1, objectFile_a);
+			myObject->render(0);
 			break;
 		case 3:
-			//TODO load sphere
+			cout << "Loading C level project..." << endl;
+			myObject->setTexture(0, textureFile_c);
+			myObject->setTexture(1, objectFile_c);
+			myObject->render(0);
 			break;
 		default:
 			exit(1);
@@ -316,9 +340,13 @@ int main(int argc, char* argv[]) {
 
 	main_window = glutCreateWindow("CSI 4341 Final Project");
 	glutDisplayFunc(myGlutDisplay);
-	glutKeyboardUpFunc(myGlutK);
+	glutKeyboardUpFunc(myGlutKeyBoard);
 	glutReshapeFunc(myGlutReshape);
 	
+	//Setup textured Objects
+	myObject->setTexture(0, textureFile_c);
+	myObject->setTexture(1, objectFile_c);
+
 	//Set up OpenGL lighting
 	glShadeModel(GL_SMOOTH);
 
@@ -334,23 +362,21 @@ int main(int argc, char* argv[]) {
 	glEnable(GL_DEPTH_TEST);
 	glPolygonOffset(1, 1);
 
-	//Setup textured Objects
-	myObject->setTexture(0,"./data/smile.ppm");
-	myObject->setTexture(1, "./data/sphere.ply");
-
 	//Here's the GLUI code
 	GLUI *glui = GLUI_Master.create_glui("GLUI");
 
 	GLUI_Panel* panel = glui->add_panel("Object Renderer");
-	new GLUI_Checkbox(panel, "Wireframe", &wireframe);
-	new GLUI_Checkbox(panel, "Filled", &filled);
+	GLUI_RadioGroup* framingGroup = glui->add_radiogroup_to_panel(panel, &framing, NULL, control_cb);
+	glui->add_radiobutton_to_group(framingGroup, "Wireframe");
+	glui->add_radiobutton_to_group(framingGroup, "Filled");
 
 	glui->add_column_to_panel(panel, true);
+
 	GLUI_RadioGroup* radioGroup = glui->add_radiogroup_to_panel(panel, &level, NULL, control_cb);
-	GLUI_RadioButton* radAP = glui->add_radiobutton_to_group(radioGroup, "Level A+");
-	GLUI_RadioButton* radA = glui->add_radiobutton_to_group(radioGroup, "Level A");
-	GLUI_RadioButton* radB = glui->add_radiobutton_to_group(radioGroup, "Level B");
-	GLUI_RadioButton* radC = glui->add_radiobutton_to_group(radioGroup, "Level C");
+	glui->add_radiobutton_to_group(radioGroup, "Level A+");
+	glui->add_radiobutton_to_group(radioGroup, "Level A");
+	glui->add_radiobutton_to_group(radioGroup, "Level B");
+	glui->add_radiobutton_to_group(radioGroup, "Level C");
 
 	glui->add_button("Quit", 0, (GLUI_Update_CB)exit);
 

@@ -324,20 +324,10 @@ Postcondition:
 Error Condition: If we haven't allocated memory for our
 faceList or vertexList then do not attempt to render.
 =============================================== */
-void ply::render(GLuint blendTextureID) {
+void ply::render() {
 	if (vertexList == NULL || faceList == NULL) {
 		return;
 	}
-
-	// Enable the ability to draw 2D textures
-	glEnable(GL_TEXTURE_2D);
-
-	// Render the base texture for us to see how it changes
-	glBindTexture(GL_TEXTURE_2D, blendTextureID);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
-	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
-
-	glPushMatrix();
 
 	for (int i = 0; i < faceCount; i++) {
 		// All of our faces are actually triangles for PLY files
@@ -361,9 +351,6 @@ void ply::render(GLuint blendTextureID) {
 
 		glEnd();
 	}
-	glPopMatrix();
-
-	glDisable(GL_TEXTURE_2D);
 }
 
 void ply::rotate(float angle, int x, int y, int z, GLuint blendTextureID) {
