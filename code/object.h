@@ -70,7 +70,7 @@ class object{
 		=============================================== */
 		void drawWiredObject();
 
-		void resetAnimation();
+		bool resetAnimation();
 		void reloadObject();
 		void moveObject(float theta, float phi);
 		void rotateObject(float theta, float phi);

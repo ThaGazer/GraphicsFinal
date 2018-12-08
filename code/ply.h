@@ -70,7 +70,7 @@ class ply : public entity{
 		Precondition:
 		Postcondition:
 		=============================================== */
-		bool animatReset(ply* resetRef);
+		double animatReset();
 		/*	===============================================
 			Desc: Prints some statistics about the file you have read in
 			Precondition:

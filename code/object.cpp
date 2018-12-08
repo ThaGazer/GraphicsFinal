@@ -76,13 +76,12 @@ void object::stretchObject(Point iSect, float theta, float phi) {
 	objectTexture->stretch(iSect, theta, phi);
 }
 
-void object::resetAnimation(){
+bool object::resetAnimation() {
 	cout << "Resetting animation..." << endl;
-	ply* tmp = new ply(objectTexture->getfile());
 
-	while (!objectTexture->animatReset(tmp)) {
-		cout << "shifting" << endl;
-	}
+	double left = objectTexture->animatReset();
+	cout << left << endl;
+	return (left > 0.5);
 }
 
 void object::reloadObject() {

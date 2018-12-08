@@ -35,6 +35,7 @@ bool drawRay = false;
 bool objectMovement = false;
 bool objectRotation = false;
 bool objectStretch = false;
+bool objectAniReload = false;
 Point isectPointWorldCoord;
 
 // Window information
@@ -205,6 +206,12 @@ void myGlutDisplay(void)
 
 	switch (framing) {
 		case 0:
+			if (objectAniReload) {
+				if (!myObject->resetAnimation()) {
+					objectAniReload = false;
+				}
+			}
+
 			glDisable(GL_POLYGON_OFFSET_FILL);
 			glColor3f(1.0, 1.0, 1.0);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
@@ -234,7 +241,7 @@ void myGlutKeyBoard(unsigned char key, int x, int y) {
 			exit(0);
 			break;
 		case 'a':
-			myObject->resetAnimation();
+			objectAniReload = true;
 			break;
 		case 'r':
 			myObject->reloadObject();

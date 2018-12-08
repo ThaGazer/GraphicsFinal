@@ -68,28 +68,6 @@ void ply::reload() {
 	loadGeometry();
 }
 
-bool ply::animatReset(ply* resetRef) {
-	vertex* tempList = resetRef->vertexList;
-
-	bool equal = true;
-	for (int i = 0; i < vertexCount; i++) {
-		Point cur = Point(vertexList[i].x, vertexList[i].y, vertexList[i].z);
-		Point temp = Point(tempList[i].x, tempList[i].y, tempList[i].z);
-		Vector unitVec = (cur / fabs(cur.distance(temp)));
-
-		cur = cur - unitVec;
-		vertexList[i].x = cur[0];
-		vertexList[i].y = cur[1];
-		vertexList[i].z = cur[2];
-
-		/*if (vertexList[i].x > tempList[i].x) {
-			equal = false;
-		}*/
-	}
-
-	return equal;
-}
-
 /*  ===============================================
 Desc: Parses a file and loads vertices into vertexList and faceList.
 Precondition:
@@ -242,6 +220,13 @@ void ply::loadGeometry() {
 		myfile.close();
 
 		scaleAndCenter();
+
+		for (int i = 0; i < vertexCount; i++) {
+			base_vertexList[i] = vertexList[i];
+		}
+		for (int i = 0; i < faceCount; i++) {
+			base_faceList[i] = faceList[i];
+		}
 	}
 	else {
 		cout << "Unable to open file: " << filePath << endl;
@@ -376,6 +361,34 @@ void ply::render() {
 	}
 }
 
+double ply::animatReset() {
+	double numUnitVecs = 0;
+	for (int i = 0; i < vertexCount; i++) {
+		Point cur = Point(vertexList[i].x, vertexList[i].y, vertexList[i].z);
+		Point temp = Point(base_vertexList[i].x, base_vertexList[i].y, base_vertexList[i].z);
+		Vector unitVec = cur - temp;
+
+		if (unitVec.length() > 0) {
+			unitVec.normalize();
+			unitVec = unitVec * .002;
+			numUnitVecs = (cur - temp).length() / unitVec.length();
+			cur = cur - unitVec;
+
+			vertexList[i].x = cur[0];
+			vertexList[i].y = cur[1];
+			vertexList[i].z = cur[2];
+
+			if (fabs(cur.distance(temp)) < 0.1) {
+				vertexList[i].x = base_vertexList[i].x;
+				vertexList[i].y = base_vertexList[i].y;
+				vertexList[i].z = base_vertexList[i].z;
+			}
+		}
+	}
+
+	return numUnitVecs;
+}
+
 void ply::move(float theta, float phi) {
 	for (int i = 0; i < vertexCount; i++) {
 		vertexList[i].x += theta;
@@ -400,6 +413,7 @@ void ply::rotate(float theta, float phi) {
 
 void ply::stretch(Point isect, float theta, float phi) {
 	vertexList[0].x += theta;
+	vertexList[0].y += phi;
 }
 
 /*  ===============================================
@@ -440,7 +454,6 @@ void ply::renderWireFrame() {
 	}
 	glPopMatrix();
 }
-
 
 /*  ===============================================
 Desc: Prints some statistics about the file you have read in
