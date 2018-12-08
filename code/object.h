@@ -23,7 +23,6 @@
 */
 class object{
 	public:
-		void drawShpere();
 		/*	===============================================
 		Desc:
 		Precondition: 
@@ -70,23 +69,12 @@ class object{
 		Postcondition:
 		=============================================== */
 		void drawWiredObject();
-		/*	===============================================
-		Desc:			Calls into this function modify a previously loaded ppm's
-		color array.
 
-		Note that this does NOT change the original ppm image at all.
-
-		Also note, that a new OpenGL Texture is generated everytime, we
-		paint on the texture.  There could probably be a buffer to improve
-		the performance of this call.
-		Precondition:
-		Postcondition:
-		=============================================== */
-		void paintTexture(float x, float y, char r, char g, char b);
-		void paintTexture();
-
-		void resetAnimation(string _filename);
-		void rotateObject(float angle, int x, int y, int z);
+		void resetAnimation();
+		void reloadObject();
+		void moveObject(float theta, float phi);
+		void rotateObject(float theta, float phi);
+		void stretchObject(Point isectPoint, float x, float y);
 		
 	private:
 		// The first texture image

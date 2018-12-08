@@ -32,8 +32,10 @@ float obj_pos[] = { 0.0, 0.0, 0.0 };
 
 // Flag for OpenGL interaction
 bool drawRay = false;
+bool objectMovement = false;
 bool objectRotation = false;
 bool objectStretch = false;
+Point isectPointWorldCoord;
 
 // Window information
 double windowXSize = 500;
@@ -56,7 +58,7 @@ int mouseScreenY = 0;
 
 string textureFile_c = "./data/smile.ppm";
 string objectFile_c = "./data/sphere.ply";
-string objectFile_a = "";
+string objectFile_a = "./data/mario.ply";
 
 using namespace std;
 
@@ -147,7 +149,7 @@ void drawRayFunc(int x, int y){
 			objectStretch = true;
 		}
 		else { //mouse clicks outside object bounds
-			objectRotation = true;
+			objectMovement = true;
 		}
 	}
 }
@@ -157,12 +159,32 @@ void drawRayFunc(int x, int y){
  * depending on where the mouse click
  */
 void objectInteraction() {
-	if (drawRay == true) {
-		if (objectRotation == true) {
-			cout << "Roatating" << endl;
+	if (drawRay) {
+		if (objectMovement) {
+			if (!objectRotation) {
+				cout << "Movement" << endl;
+
+				float theta = (mouseScreenX - mouseClickX) / 5000;
+				float phi = (mouseClickY - mouseScreenY) / 5000;
+
+				myObject->moveObject(theta, phi);
+			}
+			else {
+				cout << "Rotation" << endl;
+
+				float theta = 0;
+				float phi = 0;
+
+ 				myObject->rotateObject(theta, phi);
+			}
 		}
 		else if (objectStretch == true) {
-			cout << "Stretching" << endl;
+			cout << "Stretch" << endl;
+
+			float theta = fmod((mouseScreenX - mouseClickX), 360) / 5000;
+			float phi = fmod((mouseClickY - mouseScreenY), 360) / 5000;
+
+			myObject->stretchObject(Point(0, 0, 0), theta, phi);
 		}
 		else {
 			exit(1);
@@ -183,16 +205,18 @@ void myGlutDisplay(void)
 
 	switch (framing) {
 		case 0:
-			glEnable(GL_POLYGON_OFFSET_FILL);
+			glDisable(GL_POLYGON_OFFSET_FILL);
 			glColor3f(1.0, 1.0, 1.0);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
 			myObject->render(0);
 			break;
 		case 1:
-			glDisable(GL_POLYGON_OFFSET_FILL);
+			glEnable(GL_POLYGON_OFFSET_FILL);
 			glColor3f(1.0, 1.0, 1.0);
 			glPolygonMode(GL_FRONT_AND_BACK, GL_LINE);
-			myObject->render(1);
+			glPushMatrix();
+				myObject->render(1);
+			glPopMatrix();
 			break;
 		default:
 			exit(1);
@@ -209,8 +233,15 @@ void myGlutKeyBoard(unsigned char key, int x, int y) {
 		case 'q':
 			exit(0);
 			break;
+		case 'a':
+			myObject->resetAnimation();
 		case 'r':
-			myObject->resetAnimation(objectFile_c);
+			myObject->reloadObject();
+		case 'f':
+			objectRotation = !objectRotation;
+			break;
+		default:
+			exit(1);
 	}
 	glutPostRedisplay();
 }
@@ -235,12 +266,11 @@ void myGlutMotion(int x, int y) {
 */
 void myGlutMouse(int button, int button_state, int x, int y) {
 	updateMouse(x, y);
-
 	// Cast a ray to the screen
 	// Setup a flag so we can see the actual ray that is being cast.
 	if (button_state == GLUT_UP && button == GLUT_LEFT_BUTTON) {
 		drawRay = false;
-		objectRotation = false;
+		objectMovement = false;
 		objectStretch = false;
 	}
 	if ((button_state == GLUT_DOWN && button == GLUT_LEFT_BUTTON) && drawRay == false) {

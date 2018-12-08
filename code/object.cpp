@@ -45,13 +45,17 @@ object::~object(){
 }
 
 void object::drawFilledObject() {
+	glEnable(GL_POLYGON_OFFSET_FILL);
+	glColor3f(1.0, 1.0, 1.0);
+	glPolygonMode(GL_FRONT_AND_BACK, GL_FILL);
+
 	glEnable(GL_TEXTURE_2D);
 
 	glBindTexture(GL_TEXTURE_2D, blendTextureID);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_NEAREST);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_NEAREST);
 
-	drawShpere();
+	objectTexture->render();
 
 	glDisable(GL_TEXTURE_2D);
 }
@@ -60,13 +64,27 @@ void object::drawWiredObject() {
 	objectTexture->renderWireFrame();
 }
 
-void object::rotateObject(float angle, int x, int y, int z) {
-	objectTexture->rotate(angle, x, y, z, blendTextureID);
+void object::moveObject(float theta, float phi) {
+	objectTexture->move(theta, phi);
 }
 
-void object::resetAnimation(string _filename){
-	cout << "Resetting object..." << endl;
-	objectTexture = new ply(_filename);
+void object::rotateObject(float theta, float phi) {
+	objectTexture->rotate(theta, phi);
+}
+
+void object::stretchObject(Point iSect, float theta, float phi) {
+	objectTexture->stretch(iSect, theta, phi);
+}
+
+void object::resetAnimation(){
+	cout << "Resetting animation..." << endl;
+	ply* tmp = new ply(objectTexture->getfile());
+
+	while (!objectTexture->animatReset(tmp));
+}
+
+void object::reloadObject() {
+	objectTexture->reload();
 }
 
 /*	===============================================
@@ -83,8 +101,8 @@ Postcondition:
 void object::setTexture(int textureNumber,std::string _fileName){
 	/*
 		Algorithm
-		Step 1: Allocate memory for texture
-		Step 2: Generate textures and bind them to object
+		if 0: load texture mapping
+		if 1: load ply
 	*/
 	switch (textureNumber) {
 		case 0:
@@ -161,108 +179,3 @@ void object::render(int option){
 	}
 }
 
-void object::drawShpere() {
-	float radius = 0.5;
-	float angleH = -PI / (float)2.0;
-	float angle = PI / 2.0f;
-
-	int m_segmentsX = 100;
-	int m_segmentsY = 100;
-
-	float angle_delta = 2.0 * PI / (float)m_segmentsX;
-	float angleH_delta = PI / (float)m_segmentsY;
-
-	glBegin(GL_TRIANGLES);
-	for (int i = 0; i < m_segmentsY; i++) {
-		angle = 0;
-		for (int j = 0; j < m_segmentsX; j++) {
-			// equation of a sphere
-			float x = radius * cos(angleH) * cos(angle);
-			float z = radius * cos(angleH) * sin(angle);
-			float y = radius * sin(angleH);
-
-			float newx = radius * cos(angleH) * cos(angle + angle_delta);
-			float newz = radius * cos(angleH) * sin(angle + angle_delta);
-			float newy = radius * sin(angleH);
-
-			// Generate second triangle to make a quad
-			float x_next = radius * cos(angleH + angleH_delta) * cos(angle);
-			float z_next = radius * cos(angleH + angleH_delta) * sin(angle);
-			float y_next = radius * sin(angleH + angleH_delta);
-
-			float newx_next = radius * cos(angleH + angleH_delta) * cos(angle + angle_delta);
-			float newz_next = radius * cos(angleH + angleH_delta) * sin(angle + angle_delta);
-			float newy_next = radius * sin(angleH + angleH_delta);
-
-			// i = m_segmentsY = 100 maximum
-			// j = m_segmentsY = 100 maximum
-
-			float textureCoordX_delta = (float)1 / (float)m_segmentsX;	// increments with j
-			float textureCoordY_delta = (float)1 / (float)m_segmentsY; 	// increments with i
-
-																		// Commented out glTexCoord2f represents mapping
-																		// an entire texture to a set of two triangles
-																		// Note that the top of the sphere
-																		// will not quite get mapped correctly due to this algorithm
-
-																		// Note that we subtract by 1 at the beginning of tx,ty,etx, and ety to flip
-																		// the texture.
-			float tx = 1 - j*textureCoordX_delta;// starting x pixel coordinate
-			float ty = 1 - i*textureCoordY_delta;// starting y pixel coordinate
-			float etx = 1 - (j + 1)*textureCoordX_delta;// ending x pixel coordinate
-			float ety = 1 - (i - 1)*textureCoordY_delta;// ending y pixel coordinate
-
-			glTexCoord2f(tx, ety); 		// glTexCoord2f(0.0f, 1.0f);
-			glNormal3f(x, y, z);
-			glVertex3f(x, y, z);
-
-			glTexCoord2f(etx, ety); 		// glTexCoord2f(1.0f, 1.0f);
-			glNormal3f(newx, newy, newz);
-			glVertex3f(newx, newy, newz);
-
-			glTexCoord2f(etx, ty); 		// glTexCoord2f(1.0f, 0.0f);
-			glNormal3f(newx_next, newy_next, newz_next);
-			glVertex3f(newx_next, newy_next, newz_next);
-
-			glTexCoord2f(etx, ty); 		// glTexCoord2f(1.0f, 0.0f);
-			glNormal3f(newx_next, newy_next, newz_next);
-			glVertex3f(newx_next, newy_next, newz_next);
-
-			glTexCoord2f(tx, ty); 		// glTexCoord2f(0.0f, 0.0f);
-			glNormal3f(x_next, y_next, z_next);
-			glVertex3f(x_next, y_next, z_next);
-
-			glTexCoord2f(tx, ety); 		// glTexCoord2f(0.0f, 1.0f);
-			glNormal3f(x, y, z);
-			glVertex3f(x, y, z);
-
-			//				glTexCoord2f(tx, ety); 		// glTexCoord2f(0.0f, 1.0f);
-			//				glNormal3f(x, y, z);
-			//				glVertex3f(x, y, z);
-			//
-			//				glTexCoord2f(etx, ety); 		// glTexCoord2f(1.0f, 1.0f);
-			//				glNormal3f(newx, newy, newz);
-			//				glVertex3f(newx, newy, newz);
-			//				
-			//				glTexCoord2f(etx, ty); 		// glTexCoord2f(1.0f, 0.0f);
-			//				glNormal3f(newx_next, newy_next, newz_next);
-			//				glVertex3f(newx_next, newy_next, newz_next);
-			//
-			//				glTexCoord2f(etx, ty); 		// glTexCoord2f(1.0f, 0.0f);
-			//				glNormal3f(newx_next, newy_next, newz_next);
-			//				glVertex3f(newx_next, newy_next, newz_next);
-			//				
-			//				glTexCoord2f(tx, ty); 		// glTexCoord2f(0.0f, 0.0f);
-			//				glNormal3f(x_next, y_next, z_next);
-			//				glVertex3f(x_next, y_next, z_next);
-			//				
-			//				glTexCoord2f(tx, ety); 		// glTexCoord2f(0.0f, 1.0f);
-			//				glNormal3f(x, y, z);
-			//				glVertex3f(x, y, z);
-
-			angle = angle + angle_delta;
-		}
-		angleH = angleH + angleH_delta;
-	}
-	glEnd();
-}

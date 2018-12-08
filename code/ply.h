@@ -10,7 +10,7 @@
 #define PLY_H
 
 #include <string>
-#include "geometry.h"
+#include "Algebra.h"
 #include "entity.h"
 
 using namespace std;
@@ -56,8 +56,9 @@ class ply : public entity{
 			Postcondition:
 		=============================================== */  
 		void render();
-		void rotate(float angle, int x, int y, int z, GLuint blendTextureID);
-		void stretch();
+		void move(float theta, float phi);
+		void rotate(float theta, float phi);
+		void stretch(Point isect, float theta, float phi);
 		/*	===============================================
 		Desc: Draws the wireframe(edges) of a 3D object
 		Precondition:
@@ -69,7 +70,7 @@ class ply : public entity{
 		Precondition:
 		Postcondition:
 		=============================================== */
-		void animatReset();
+		bool animatReset(ply* resetRef);
 		/*	===============================================
 			Desc: Prints some statistics about the file you have read in
 			Precondition:
@@ -84,6 +85,7 @@ class ply : public entity{
 			=============================================== */
 		void printVertexList();
 		void printFaceList();
+		string getfile();
 
 	private:
 		/*	===============================================

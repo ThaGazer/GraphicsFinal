@@ -12,6 +12,7 @@ Examples:
 #include <stdio.h>
 #include <cstdlib>
 #include <math.h>
+#include <freeglut.h>
 #include <GL/glui.h>
 #include "ply.h"
 
@@ -67,8 +68,24 @@ void ply::reload() {
 	loadGeometry();
 }
 
-void ply::animatReset() {
+bool ply::animatReset(ply* resetRef) {
+	vertex* tempList = resetRef->vertexList;
 
+	bool equal = true;
+	for (int i = 0; i < vertexCount; i++) {
+		Point cur = Point(vertexList[i].x, vertexList[i].y, vertexList[i].z);
+		Point temp = Point(tempList[i].x, tempList[i].y, tempList[i].z);
+		Vector unitVec = (.00002) * (cur / cur.distance(temp));
+
+		if (cur.distance(Point(0,0,0)) > temp.distance(Point(0,0,0))) {
+			cur = cur - unitVec;
+			vertexList[i].x = cur[0];
+			vertexList[i].y = cur[1];
+			vertexList[i].z = cur[2];
+		}
+	}
+
+	return equal;
 }
 
 /*  ===============================================
@@ -90,6 +107,8 @@ void ply::loadGeometry() {
 	// Parse header   
 	ifstream myfile(filePath.c_str());
 	if (myfile.is_open()) {
+		cout << "Reading ply file: " << filePath << endl;
+
 		string line;
 		bool readVertices = false;  // start reading data into our vertex list
 		bool readFaces = false; // start reading data into our face list
@@ -216,6 +235,8 @@ void ply::loadGeometry() {
 			}
 			delete copy;
 		}
+		cout << "Finished reading ply file" << endl;
+
 		myfile.close();
 
 		scaleAndCenter();
@@ -353,25 +374,31 @@ void ply::render() {
 	}
 }
 
-void ply::rotate(float angle, int x, int y, int z, GLuint blendTextureID) {
-	if(x == true) {
-		for (int i = 0; i < vertexCount; i++) {
-			vertexList[i].x += angle;
-		}
-	}
-	else if(y == true) {
-		for (int i = 0; i < vertexCount; i++) {
-			vertexList[i].y += angle;
-		}
-	}
-	else {
-		for (int i = 0; i < vertexCount; i++) {
-			vertexList[i].z += angle;
-		}
+void ply::move(float theta, float phi) {
+	for (int i = 0; i < vertexCount; i++) {
+		vertexList[i].x += theta;
+		vertexList[i].y += phi;
 	}
 }
 
-void ply::stretch() {}
+void ply::rotate(float theta, float phi) {
+	//for (int i = 0; i < vertexCount; i++) {
+	//	float x = vertexList[i].x;
+	//	float y = vertexList[i].y;
+	//	float z = vertexList[i].z;
+	//	float rad = sqrt((x) * (x) + (y) * (y) + (z) * (z));
+
+	//	vertexList[i].x = rad*cos(theta)*sin(phi);
+	//	vertexList[i].y = rad*sin(theta)*sin(phi);
+	//	vertexList[i].z = rad*cos(phi);
+	//}
+
+	
+}
+
+void ply::stretch(Point isect, float theta, float phi) {
+	vertexList[0].x += theta;
+}
 
 /*  ===============================================
 Desc: Draws the wireframe(edges) of a 3D object.
@@ -465,4 +492,8 @@ void ply::printFaceList() {
 			}
 		}
 	}
+}
+
+string ply::getfile() {
+	return filePath;
 }
