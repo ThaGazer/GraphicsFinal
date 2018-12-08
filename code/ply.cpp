@@ -75,14 +75,16 @@ bool ply::animatReset(ply* resetRef) {
 	for (int i = 0; i < vertexCount; i++) {
 		Point cur = Point(vertexList[i].x, vertexList[i].y, vertexList[i].z);
 		Point temp = Point(tempList[i].x, tempList[i].y, tempList[i].z);
-		Vector unitVec = (.00002) * (cur / cur.distance(temp));
+		Vector unitVec = (cur / fabs(cur.distance(temp)));
 
-		if (cur.distance(Point(0,0,0)) > temp.distance(Point(0,0,0))) {
-			cur = cur - unitVec;
-			vertexList[i].x = cur[0];
-			vertexList[i].y = cur[1];
-			vertexList[i].z = cur[2];
-		}
+		cur = cur - unitVec;
+		vertexList[i].x = cur[0];
+		vertexList[i].y = cur[1];
+		vertexList[i].z = cur[2];
+
+		/*if (vertexList[i].x > tempList[i].x) {
+			equal = false;
+		}*/
 	}
 
 	return equal;

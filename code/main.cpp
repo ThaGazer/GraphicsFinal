@@ -143,7 +143,7 @@ void drawRayFunc(int x, int y){
 		float t = Intersect(eyePointP, rayV, Matrix());
 		std::cout << "t: " << t << std::endl;
 
-		Point isectPointWorldCoord = getIsectPointWorldCoord(eyePointP, rayV, t);
+		isectPointWorldCoord = getIsectPointWorldCoord(eyePointP, rayV, t);
 		
 		if (t > 0) { //mouse intersects with object
 			objectStretch = true;
@@ -235,8 +235,10 @@ void myGlutKeyBoard(unsigned char key, int x, int y) {
 			break;
 		case 'a':
 			myObject->resetAnimation();
+			break;
 		case 'r':
 			myObject->reloadObject();
+			break;
 		case 'f':
 			objectRotation = !objectRotation;
 			break;

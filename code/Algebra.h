@@ -66,6 +66,10 @@ public:
 		return false;
 	};
 
+	bool operator> (const Point v) {
+		return distance(v) > 0;
+	};
+
 	bool operator== (const Point v) {
 		//if ((p[0] == v[0]) && (p[1] == v[1]) && (p[2] == v[2])) {
 		//	return 1;
@@ -112,7 +116,7 @@ public:
 	}
 
 	double distance(Point pIn) {
-		return fabs(sqrt((p[0] - pIn[0]) * (p[0] - pIn[0]) + (p[0] - pIn[1]) * (p[0] - pIn[1]) + (p[2] - pIn[2]) * (p[2] - pIn[2])));
+		return sqrt((p[0] - pIn[0]) * (p[0] - pIn[0]) + (p[0] - pIn[1]) * (p[0] - pIn[1]) + (p[2] - pIn[2]) * (p[2] - pIn[2]));
 	}
 
 private:

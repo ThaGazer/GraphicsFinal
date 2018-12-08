@@ -80,7 +80,9 @@ void object::resetAnimation(){
 	cout << "Resetting animation..." << endl;
 	ply* tmp = new ply(objectTexture->getfile());
 
-	while (!objectTexture->animatReset(tmp));
+	while (!objectTexture->animatReset(tmp)) {
+		cout << "shifting" << endl;
+	}
 }
 
 void object::reloadObject() {
