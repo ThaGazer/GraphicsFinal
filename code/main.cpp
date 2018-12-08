@@ -36,6 +36,7 @@ bool objectMovement = false;
 bool objectRotation = false;
 bool objectStretch = false;
 bool objectAniReload = false;
+bool objectIdle = true;
 Point isectPointWorldCoord;
 
 // Window information
@@ -56,6 +57,9 @@ float mouseClickX = 0;
 float mouseClickY = 0;
 int mouseScreenX = 0;
 int mouseScreenY = 0;
+
+int shiftX = 0;
+int shiftY = 0;
 
 string textureFile_c = "./data/smile.ppm";
 string objectFile_c = "./data/sphere.ply";
@@ -152,6 +156,7 @@ void drawRayFunc(int x, int y){
 		else { //mouse clicks outside object bounds
 			objectMovement = true;
 		}
+		objectIdle = false;
 	}
 }
 
@@ -163,29 +168,23 @@ void objectInteraction() {
 	if (drawRay) {
 		if (objectMovement) {
 			if (!objectRotation) {
-				cout << "Movement" << endl;
-
 				float theta = (mouseScreenX - mouseClickX) / 5000;
 				float phi = (mouseClickY - mouseScreenY) / 5000;
 
 				myObject->moveObject(theta, phi);
 			}
 			else {
-				cout << "Rotation" << endl;
-
-				float theta = 0;
-				float phi = 0;
+				float theta = (mouseScreenX - mouseClickX) / 5000;
+				float phi = (mouseClickY - mouseScreenY) / 5000;
 
  				myObject->rotateObject(theta, phi);
 			}
 		}
 		else if (objectStretch == true) {
-			cout << "Stretch" << endl;
-
 			float theta = fmod((mouseScreenX - mouseClickX), 360) / 5000;
 			float phi = fmod((mouseClickY - mouseScreenY), 360) / 5000;
 
-			myObject->stretchObject(Point(0, 0, 0), theta, phi);
+			myObject->stretchObject(isectPointWorldCoord, theta, phi);
 		}
 		else {
 			exit(1);

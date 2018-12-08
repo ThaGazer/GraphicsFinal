@@ -397,23 +397,36 @@ void ply::move(float theta, float phi) {
 }
 
 void ply::rotate(float theta, float phi) {
-	//for (int i = 0; i < vertexCount; i++) {
-	//	float x = vertexList[i].x;
-	//	float y = vertexList[i].y;
-	//	float z = vertexList[i].z;
-	//	float rad = sqrt((x) * (x) + (y) * (y) + (z) * (z));
+	for (int i = 0; i < vertexCount; i++) {
+		float x = vertexList[i].x;
+		float y = vertexList[i].y;
+		float z = vertexList[i].z;
+		float rad = fabs(sqrt((x) * (x) + (y) * (y) + (z) * (z)));
 
-	//	vertexList[i].x = rad*cos(theta)*sin(phi);
-	//	vertexList[i].y = rad*sin(theta)*sin(phi);
-	//	vertexList[i].z = rad*cos(phi);
-	//}
-
-	
+		vertexList[i].x = rad*cos(theta)*sin(phi);
+		vertexList[i].y = rad*sin(theta)*cos(phi);
+		vertexList[i].z = rad*cos(phi);
+	}
 }
 
 void ply::stretch(Point isect, float theta, float phi) {
-	vertexList[0].x += theta;
-	vertexList[0].y += phi;
+	cout << isect.at(0) << isect.at(1) << isect.at(2) << endl;
+	if (isect.at(0) > 0) {
+		for (int i = 0; i < vertexCount; i++) {
+			if (vertexList[i].x > 0) {
+				vertexList[i].x += theta;
+				vertexList[i].y += phi;
+			}
+		}
+	}
+	else {
+		for (int i = 0; i < vertexCount; i++) {
+			if (vertexList[i].x < 0) {
+				vertexList[i].x += theta;
+				vertexList[i].y += phi;
+			}
+		}
+	}
 }
 
 /*  ===============================================

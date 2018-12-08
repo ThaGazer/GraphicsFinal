@@ -71,6 +71,7 @@ class object{
 		void drawWiredObject();
 
 		bool resetAnimation();
+		void idleAnimation(float theta, float phi);
 		void reloadObject();
 		void moveObject(float theta, float phi);
 		void rotateObject(float theta, float phi);

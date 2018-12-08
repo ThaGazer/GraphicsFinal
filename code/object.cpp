@@ -77,11 +77,11 @@ void object::stretchObject(Point iSect, float theta, float phi) {
 }
 
 bool object::resetAnimation() {
-	cout << "Resetting animation..." << endl;
+	return (objectTexture->animatReset() > 0.01);
+}
 
-	double left = objectTexture->animatReset();
-	cout << left << endl;
-	return (left > 0.5);
+void object::idleAnimation(float theta, float phi) {
+	objectTexture->move(theta, phi);
 }
 
 void object::reloadObject() {
